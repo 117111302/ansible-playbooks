@@ -1,0 +1,13 @@
+Contains Ansible playbooks for IRIS project
+
+Playbook site.yml is used to deploy IRIS to prepared servers.
+It assume that services such as apache and mysql already setup and config well.
+
+Playbook base.yml is used to setup a base environment and then we can use
+site.yml to deploy IRIS.
+
+There are several roles defined:
+- apache-mod-wsgi: apache web server with mod_wsgi enabled
+- mysqldb: mysql server
+- iris-db: assume mysql server is running and create db for IRIS service
+- iris-web: assume apache server is running and setup IRIS web service

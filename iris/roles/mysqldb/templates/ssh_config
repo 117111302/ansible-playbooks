@@ -1,0 +1,17 @@
+Host tizen tizen-gerrit review.tizen.org
+  Hostname review.tizen.org
+  ProxyCommand nc -X5 -x proxy.jf.intel.com:1080 %h %p
+  Port 29418
+  User junchunX
+  IdentityFile /srv/gerrit/id_rsa
+
+Host tzs
+  Hostname localhost
+  Port 29418
+  User jenkins
+  IdentityFile /var/lib/jenkins/.ssh/id_rsa
+
+Host *
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
+

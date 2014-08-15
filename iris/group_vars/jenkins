@@ -1,0 +1,10 @@
+---
+jenkins_user: jenkins
+jenkins_repo_server: http://pkg.jenkins-ci.org
+jenkins_repo_path: opensuse-stable
+jenkins_home: /var/lib/jenkins
+jenkins_port: 8080
+jenkins_ajp_port: -1
+jenkins_args: --prefix=/robot
+
+ansible_fqdn: localhost

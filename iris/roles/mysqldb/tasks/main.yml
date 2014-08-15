@@ -1,0 +1,23 @@
+---
+- name: install mysql server
+  zypper: name="{{item}}" state=present
+  with_items:
+  - mysql-community-server
+
+- name: enable and start mysql server
+  service: name=mysql state=started enabled=yes
+
+- name: install python-mysql lib
+  zypper: name=python-mysql state=present
+
+- name: Change mysql root user's password
+  mysql_user: name=root password=root
+
+- name: Upload my.cnf
+  template: src=my.cnf dest=/root/.my.cnf
+
+- name: create db
+  mysql_db: name=reviewdb
+
+- name: create database user
+  mysql_user: name=gerrit password=gerrit priv=reviewdb.*:ALL

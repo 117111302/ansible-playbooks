@@ -1,0 +1,66 @@
+# OBS related parameters
+OBS_URL=https://tzs
+OBS_API_URL=https://tzs:444
+OBS_API_USERNAME=Admin
+OBS_API_PASSWD=opensuse
+
+# Gerrit related parameters
+GERRIT_USERNAME=jenkins
+GERRIT_HOSTNAME=tzs
+GERRIT_SSHPORT=29418
+GERRIT_SILENT_MODE=0
+
+# Redis server
+REDIS_HOST=
+REDIS_PORT=6379
+
+# Git related parameters
+GIT_CACHE_DIR=/var/lib/jenkins/git-cache
+MAPPING_PROJECTS=
+MAPPING_PRJ=scm/git-obs-mapping
+
+#Host name of smtp server
+SMTP_SERVER=
+#The name displayed in mail for jenkins usage
+NOREPLY_EMAIL_SENDER=noreply@tizen.org
+#Mailinglist which jenkins will send SR notification to it
+MAILINGLIST=
+
+# Download server configuration
+URL_PUBLIC_REPO_BASE=
+PATH_REPO_BASE=/srv/download/
+PATH_LIVE_REPO_BASE=/srv/download/live/
+
+## Image sync configuration
+IMG_SYNC_DEST_BASE=
+
+## VM configuration
+USE_VM=1
+VM_IMAGE=mic-appliance
+VM_MEMORY=8192
+VM_CPUS=8
+
+############################################
+# Below are sync instance parameters. Please
+# enable them when deploy sync instance.
+############################################
+
+# Sync target gerrit related parameters
+#SYNC_GERRIT_USERNAME=
+#SYNC_GERRIT_HOSTNAME=
+#SYNC_GERRIT_SSHPORT=29418
+
+# The parent project of projects sync to gerrit
+#GERRIT_PARENT_PROJECT=rsa-public-project
+
+# Use below regular expression to control which project should be synced to
+# inside gerrit. Generally, projects under scm/ are specified for each domain,
+# which should not be synced to inside.
+#
+# Example to sync all refs for platform/.* projects, and tizen branches and tags
+# for apps/web/.* projects.
+#     [{'project':'^platform/.*$', 'refname':'.*'},
+#      {'project':'^apps/web/.*$', 'refname':'^(tizen|refs/tags/.*)$'}
+#     ]
+#
+#SYNC_GERRIT_PROJECT_PATTERN=[{'project':'^(?!scm/).*$', 'refname':'.*'}]

@@ -1,0 +1,10 @@
+---
+- hosts: vagrant
+  gather_facts: no
+  sudo: yes
+  roles:
+    - sysconfig-proxy
+#    - apache-mod-wsgi
+    - mysqldb
+    - socks-proxy
+    - webserver-nginx

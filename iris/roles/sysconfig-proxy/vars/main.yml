@@ -1,0 +1,5 @@
+---
+proxy_enabled: True
+http_proxy: http://proxy-mu.intel.com:911
+https_proxy: http://proxy-mu.intel.com:911
+no_proxy: download.otctools.jf.intel.com,localhost,127.0.0.1

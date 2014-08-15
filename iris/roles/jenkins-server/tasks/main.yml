@@ -1,0 +1,41 @@
+- name: Add Jenkins repository
+  zypper_repository:
+    name=jenkins
+    repo='{{ jenkins_repo_server }}/{{ jenkins_repo_path }}'
+
+- name: install jenkins
+  zypper: name=jenkins disable_gpg_check=yes
+
+- name: Install packages for jenkins-server
+  command: zypper install jenkins
+
+- name: copy jenkins ssh
+  copy: src=ssh/ dest=/var/lib/jenkins/.ssh owner=jenkins group=jenkins
+
+- name: Change jenkins prefix
+  command: sed -i 's#^\(JENKINS_ARGS=\).*#\1"--prefix=/ci"#' /etc/sysconfig/jenkins
+
+#- name: Create Jenkins user
+#  user: name=jenkins shell=/bin/false comment='Jenkins Continuous Build server' home={{ jenkins_home }}
+
+- name: Add tizen tools repo
+  zypper_repository: name=tools repo='http://download.tizen.org/tools/latest-release/openSUSE_12.3'
+
+- name: Add tizen service repo
+  zypper_repository: name=services repo='http://download.tizen.org/services/latest-release/openSUSE_12.3'
+
+- name: Install tizen service package
+  zypper: name={{ item }} disable_gpg_check=yes
+  with_items:
+    - jenkins-jobs-common
+    - jenkins-scripts
+    - jenkins-scripts-submitobs
+
+- name: Update jenkins job configuration
+  template: src=configuration dest=/var/lib/jenkins/jobs/configuration
+
+- name: Config gerrit trigger plugin
+  template: src=gerrit-trigger.xml dest=/var/lib/jenkins/gerrit-trigger.xml mode=0644 owner=jenkins group=jenkins
+
+- name: Start jenkins service
+  service: name=jenkins state=started enabled=yes
