@@ -15,8 +15,8 @@
 - name: Change jenkins prefix
   command: sed -i 's#^\(JENKINS_ARGS=\).*#\1"--prefix=/ci"#' /etc/sysconfig/jenkins
 
-#- name: Create Jenkins user
-#  user: name=jenkins shell=/bin/false comment='Jenkins Continuous Build server' home={{ jenkins_home }}
+- name: Create Jenkins user
+  user: name=jenkins shell=/bin/false comment='Jenkins Continuous Build server' home={{ jenkins_home }}
 
 - name: Add tizen tools repo
   zypper_repository: name=tools repo='http://download.tizen.org/tools/latest-release/openSUSE_12.3'

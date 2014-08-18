@@ -1,43 +1,55 @@
+---
+- name: Install Gerrit required packages
+  zypper: name={{ item }} state=present
+  with_items:
+    - java-1_7_0-openjdk
+
 - name: Create gerrit user
-  user: name=gerrit state=present home={{ gerrit_home }} shell=/bin/bash
+  user: name={{gerrit_user}} state=present
 
-#- name: Download gerrit war
-#  get_url: url={{ gerrit_source }} dest={{ gerrit_home }}/gerrit.war validate_certs=no use_proxy=yes owner=gerrit group=users
-- name: install java
-  zypper: name=java-1_7_0-openjdk state=installed
+- name: Create gerritr home
+  file: path={{gerrit_home}} owner={{gerrit_user}} group=users mode=0764 state=directory
 
-- name: gerrit init
+- name: Download gerrit war
+  get_url: url={{gerrit_source}} dest={{gerrit_home}}/gerrit.war validate_certs=no use_proxy=yes owner=gerrit group=users
+  environment: proxy
+
+- name: Create directory for jQuery
   sudo: yes
-  sudo_user: gerrit
-  command: /usr/bin/java -jar {{ gerrit_home }}/gerrit.war init --no-auto-start --batch -d {{ gerrit_site }}
+  sudo_user: "{{ gerrit_user }}"
+  action: file dest={{ gerrit_home }}/etc/ state=directory mode=0755
 
-- name: Upload gerrit.conf
+- name: Create gerrit conf
   sudo: yes
-  sudo_user: gerrit
-  template: src=gerrit.config dest={{ gerrit_site }}/etc/
+  sudo_user: "{{ gerrit_user }}"
+  template: src=gerrit.config dest={{ gerrit_home }}/etc/gerrit.config
 
-- name: Download mysql jdbc driver
-  get_url: url=http://repo2.maven.org/maven2/mysql/mysql-connector-java/5.1.21/mysql-connector-java-5.1.21.jar dest={{ gerrit_site }}/lib/
-           owner=gerrit group=users
-
-#- name: gerrit init
-#  sudo: yes
-#  sudo_user: gerrit
-#  command: /usr/bin/java -jar {{ gerrit_home }}/gerrit.war init --no-auto-start --batch -d {{ gerrit_site }}
-
-- name: link gerrit start script to /etc/inint.d/gerrit
-  command: ln -snf {{ gerrit_site }}/bin/gerrit.sh /etc/init.d/gerrit
-
-- name: Add gerrit system config file
-  shell: echo GERRIT_SITE={{ gerrit_site }} >/etc/default/gerritcodereview
-
-- name: start gerrit server
-  service: name=gerrit state=started enabled=yes
-
-- name: download google repo tool
-  get_url: url=https://storage.googleapis.com/git-repo-downloads/repo use_proxy=yes dest=/usr/bin/repo mode=0755 validate_certs=no
-
-- name: Add ssh private key for tizen gerrit
+- name: Init gerrit
   sudo: yes
-  sudo_user: gerrit
-  copy: src=id_rsa dest={{ gerrit_home }}/id_rsa mode=0600
+  sudo_user: "{{ gerrit_user }}"
+  command: chdir={{ gerrit_home }} java -jar gerrit.war init --batch -d "{{ gerrit_home }}"
+  environment: proxy
+
+- name: Setup as service
+  file: src={{ gerrit_home }}/bin/gerrit.sh dest=/etc/init.d/gerrit state=link
+
+- name: Setup gerrit home in tc
+  lineinfile: dest=/etc/default/gerritcodereview
+              create=yes
+              state=present
+              regexp="GERRIT_SITE="
+              line="GERRIT_SITE={{gerrit_home}}"
+              owner={{gerrit_user}}
+              group=users
+              mode=0644
+
+- name: Setup as boot service
+  service: name=gerrit state=restarted enabled=yes
+
+- name: Create gerrit conf
+  sudo: yes
+  sudo_user: "{{ gerrit_user }}"
+  template: src=gerrit.config dest={{ gerrit_home }}/etc/gerrit.config
+  notify:
+    - restart gerrit
+

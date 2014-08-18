@@ -1,9 +1,14 @@
 ---
 gerrit_home: /srv/gerrit
-gerrit_site: /srv/gerrit/review_site
 gerrit_source: https://gerrit-releases.storage.googleapis.com/gerrit-2.8.5.war
-gerrit_user: gaoxuesx
 gerrit_auth_type: DEVELOPMENT_BECOME_ANY_ACCOUNT
+gerrit_user: gerrit
+
+proxy:
+    http_proxy: http://proxy-mu.intel.com:911
+    https_proxy: https://proxy-mu.intel.com:911
+    no_proxy: .intel.com
+
 mysql_password:
     root: root
     gerrit: gerrit
