@@ -3,12 +3,16 @@ gerrit_home: /srv/gerrit
 gerrit_source: https://gerrit-releases.storage.googleapis.com/gerrit-2.8.5.war
 gerrit_auth_type: DEVELOPMENT_BECOME_ANY_ACCOUNT
 gerrit_user: gerrit
-
+database_server: localhost
+mysql_user: root
+db_user: gerrit
+db_name: reviewdb
+db_password: reviewpassword
+canonicalWebUrl: http://127.0.0.1:8081/
 proxy:
     http_proxy: http://proxy-mu.intel.com:911
     https_proxy: https://proxy-mu.intel.com:911
     no_proxy: .intel.com
-
 mysql_password:
     root: root
     gerrit: gerrit

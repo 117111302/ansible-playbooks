@@ -1,0 +1,40 @@
+---
+- name: Upload my.cnf
+  template: src=my.cnf dest=/root/.my.cnf
+
+- name: create db
+  mysql_db: name={{ db_name }}
+
+- name: create database user
+  mysql_user: name={{ db_user }} password={{ db_password }} priv={{ db_name }}.*:ALL
+	 
+- name: ensure database is created
+  action: mysql_db db={{ db_name }}
+  sudo: yes
+  sudo_user: "{{ plsql_user }}"
+
+- name: ensure user has access to database
+  action: mysql_user db={{ db_name }} user={{ db_user }} password={{ db_password }} priv=ALL
+  sudo: yes
+  sudo_user: "{{ plsql_user }}"
+
+- name: ensure user does not have unnecessary privilege
+  action: mysql_user user={{ db_user }} role_attr_flags=NOSUPERUSER,NOCREATEDB
+  sudo: yes
+  sudo_user: "{{ plsql_user }}"
+
+- name: Install packages for webserver-nginx
+  zypper: name={{ item }} state=installed
+  with_items:
+    - nginx
+
+- name: config nginx.conf
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+      mode=0644 owner=root group=root
+  notify: restart nginx
+
+- name: Install Gerrit required packages
+  zypper: name={{ item }} state=present
+  with_items:
+  - git
+  - java-1_7_0-openjdk
