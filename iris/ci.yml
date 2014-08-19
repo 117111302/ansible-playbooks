@@ -1,14 +1,12 @@
 ---
-- hosts: jenkins
-  gather_facts: no
-  sudo: yes
-  roles:
-    - sysconfig-proxy
-    - jenkins-server
-
 - hosts: gerrit
   gather_facts: no
   sudo: yes
   roles:
-    - sysconfig-proxy
     - gerrit
+
+- hosts: jenkins
+  gather_facts: no
+  sudo: yes
+  roles:
+    - jenkins-server
